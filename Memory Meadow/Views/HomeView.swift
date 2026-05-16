@@ -15,35 +15,29 @@ struct HomeView: View {
     @State private var showingAddMemory = false
     @State private var selectedMemory: MemoryItem?
 
+    var flowerCount: Int {
+        memories.filter { $0.type == .knowledge }.count
+    }
+
+    var treeCount: Int {
+        memories.filter { $0.type == .task }.count
+    }
+
     var body: some View {
         ZStack {
             MeadowSceneView(memories: memories, selectedMemory: $selectedMemory)
                 .ignoresSafeArea()
 
-            VStack {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Memory Meadow")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("\(memories.count) memories")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    Button(action: { showingAddMemory = true }) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title)
-                            .foregroundStyle(.blue)
-                    }
-                }
-                .padding()
-                .background(Color(uiColor: .systemBackground).opacity(0.9))
-                .cornerRadius(12)
-                .padding()
-
-                Spacer()
-            }
+            HomeHUDView(
+                greeting: "Chào Hùng",
+                subtitle: "Hôm nay cánh đồng của bạn thế nào?",
+                weatherIcon: "sun.max.fill",
+                notificationCount: 0,
+                flowerCount: flowerCount,
+                treeCount: treeCount,
+                totalCount: memories.count,
+                onAddPressed: { showingAddMemory = true }
+            )
         }
         .sheet(isPresented: $showingAddMemory) {
             AddMemoryView()

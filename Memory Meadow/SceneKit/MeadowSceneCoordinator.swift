@@ -14,6 +14,7 @@ final class MeadowSceneCoordinator: NSObject {
     var memoriesByID: [UUID: MemoryItem] = [:]
     var knownMemoryIDs: Set<UUID> = []
     var hasPerformedInitialSync = false
+    private let parallaxController = DeviceParallaxController()
 
     init(parent: MeadowSceneView) {
         self.parent = parent
@@ -33,6 +34,12 @@ final class MeadowSceneCoordinator: NSObject {
 
         panGesture.delegate = self
         pinchGesture.delegate = self
+
+        parallaxController.start(with: cameraNode)
+    }
+
+    deinit {
+        parallaxController.stop()
     }
 
     func updateMemories(_ memories: [MemoryItem]) {

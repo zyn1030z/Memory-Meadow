@@ -15,43 +15,83 @@ struct AddMemoryView: View {
     @State private var content = ""
     @State private var selectedType: MemoryType = .knowledge
 
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Memory Type") {
-                    Picker("Type", selection: $selectedType) {
-                        ForEach(MemoryType.allCases) { type in
-                            HStack {
-                                Image(systemName: type.systemImage)
-                                    .foregroundStyle(type.tintColor)
-                                Text(type.title)
-                            }
-                            .tag(type)
-                        }
-                    }
-                }
+    var isSaveDisabled: Bool {
+        content.trimmingCharacters(in: .whitespaces).isEmpty
+    }
 
-                Section("Content") {
-                    TextEditor(text: $content)
-                        .frame(minHeight: 120)
-                }
+    var body: some View {
+        VStack(spacing: 20) {
+            // Header
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Hôm nay bạn muốn lưu điều gì?")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                Text("Chọn loại ký ức và chia sẻ suy nghĩ của bạn")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .navigationTitle("Add Memory")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+
+            // Text Editor
+            TextEditor(text: $content)
+                .frame(minHeight: 120)
+                .padding(12)
+                .background(Color(uiColor: .systemBackground))
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                )
+                .padding(.horizontal, 20)
+
+            // Category Cards
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Loại ký ức")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 20)
+
+                HStack(spacing: 12) {
+                    ForEach(MemoryType.allCases) { type in
+                        MemoryTypeCard(
+                            type: type,
+                            isSelected: selectedType == type,
+                            action: { selectedType = type }
+                        )
                     }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveMemory()
-                    }
-                    .disabled(content.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
+                .padding(.horizontal, 20)
             }
+
+            Spacer()
+
+            // Save Button
+            Button(action: saveMemory) {
+                Text("Lưu ký ức")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .background(
+                        LinearGradient(
+                            colors: [.green, .yellow.opacity(0.7)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(12)
+                    .shadow(color: Color.green.opacity(0.4), radius: 8, x: 0, y: 4)
+            }
+            .disabled(isSaveDisabled)
+            .opacity(isSaveDisabled ? 0.5 : 1.0)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
         }
+        .background(Color(uiColor: .systemBackground))
     }
 
     private func saveMemory() {

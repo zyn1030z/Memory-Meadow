@@ -33,6 +33,23 @@ enum MemoryNodeFactory {
         return container
     }
 
+    static func makePreviewNode(for memory: MemoryItem) -> SCNNode {
+        let node: SCNNode
+        switch memory.type {
+        case .knowledge:
+            node = makeKnowledgeFlower()
+        case .task:
+            node = makeTaskTree()
+        case .emotion:
+            node = makeEmotionNode()
+        }
+
+        node.position = SCNVector3(0, 0, 0)
+        let spin = SCNAction.rotateBy(x: 0, y: CGFloat.pi * 2, z: 0, duration: 8)
+        node.runAction(.repeatForever(spin))
+        return node
+    }
+
     static func runGrowthAnimation(on node: SCNNode) {
         node.scale = SCNVector3(0.01, 0.01, 0.01)
 
@@ -81,6 +98,13 @@ enum MemoryNodeFactory {
             root.addChildNode(petalNode)
         }
 
+        let sway = SCNAction.rotateBy(x: 0.04, y: 0, z: 0.06, duration: 2.1)
+        sway.timingMode = .easeInEaseOut
+        let swayBack = SCNAction.rotateBy(x: -0.08, y: 0, z: -0.12, duration: 2.1)
+        swayBack.timingMode = .easeInEaseOut
+        let reset = SCNAction.rotateBy(x: 0.04, y: 0, z: 0.06, duration: 2.1)
+        root.runAction(.repeatForever(.sequence([sway, swayBack, reset])))
+
         return root
     }
 
@@ -104,6 +128,13 @@ enum MemoryNodeFactory {
         let canopyTwoNode = SCNNode(geometry: canopyTwo)
         canopyTwoNode.position = SCNVector3(0.22, 1.38, 0.1)
         root.addChildNode(canopyTwoNode)
+
+        let sway = SCNAction.rotateBy(x: 0.02, y: 0, z: 0.03, duration: 2.5)
+        sway.timingMode = .easeInEaseOut
+        let swayBack = SCNAction.rotateBy(x: -0.04, y: 0, z: -0.06, duration: 2.5)
+        swayBack.timingMode = .easeInEaseOut
+        let reset = SCNAction.rotateBy(x: 0.02, y: 0, z: 0.03, duration: 2.5)
+        root.runAction(.repeatForever(.sequence([sway, swayBack, reset])))
 
         return root
     }
@@ -140,6 +171,14 @@ enum MemoryNodeFactory {
         let floatDown = SCNAction.moveBy(x: 0, y: -0.18, z: 0, duration: 1.2)
         floatDown.timingMode = .easeInEaseOut
         root.runAction(.repeatForever(.sequence([floatUp, floatDown])))
+
+        let sway = SCNAction.rotateBy(x: 0, y: 0, z: 0.08, duration: 1.8)
+        sway.timingMode = .easeInEaseOut
+        let swayBack = SCNAction.rotateBy(x: 0, y: 0, z: -0.16, duration: 1.8)
+        swayBack.timingMode = .easeInEaseOut
+        let swayReset = SCNAction.rotateBy(x: 0, y: 0, z: 0.08, duration: 1.8)
+        swayReset.timingMode = .easeInEaseOut
+        root.runAction(.repeatForever(.sequence([sway, swayBack, swayReset])))
 
         return root
     }
