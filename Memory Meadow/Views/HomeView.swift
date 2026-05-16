@@ -28,7 +28,7 @@ struct HomeView: View {
             MeadowSceneView(memories: memories, selectedMemory: $selectedMemory)
                 .ignoresSafeArea()
 
-            HomeHUDView(
+            PremiumHUDView(
                 greeting: "Chào Hùng",
                 subtitle: "Hôm nay cánh đồng của bạn thế nào?",
                 weatherIcon: "sun.max.fill",

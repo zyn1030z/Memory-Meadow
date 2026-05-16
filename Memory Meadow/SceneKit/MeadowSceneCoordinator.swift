@@ -35,7 +35,7 @@ final class MeadowSceneCoordinator: NSObject {
         panGesture.delegate = self
         pinchGesture.delegate = self
 
-        parallaxController.start(with: cameraNode)
+//        parallaxController.start(with: cameraNode)
     }
 
     deinit {

@@ -19,7 +19,7 @@ enum CameraController {
         let node = SCNNode()
         node.name = "CameraNode"
         node.camera = camera
-        node.position = SCNVector3(0, 12, 16)
+        node.position = SCNVector3(0, 10, 17)
         lookAtMeadow(from: node)
         return node
     }
