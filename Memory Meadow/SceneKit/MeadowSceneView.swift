@@ -20,7 +20,7 @@ struct MeadowSceneView: UIViewRepresentable {
         let scnView = SCNView()
         let (scene, cameraNode) = MeadowSceneBuilder.makeScene()
         scnView.scene = scene
-        scnView.backgroundColor = UIColor.systemTeal
+        scnView.backgroundColor = .clear
         scnView.allowsCameraControl = false
         scnView.autoenablesDefaultLighting = false
         scnView.antialiasingMode = .multisampling4X
@@ -40,6 +40,13 @@ struct MeadowSceneView: UIViewRepresentable {
             in: scene,
             knownIDs: &context.coordinator.knownMemoryIDs,
             hasPerformedInitialSync: &context.coordinator.hasPerformedInitialSync
+        )
+
+        PathNetworkSynchronizer.sync(
+            memories: memories,
+            in: scene,
+            knownConnections: &context.coordinator.knownPathConnections,
+            animated: context.coordinator.hasPerformedInitialSync
         )
     }
 }

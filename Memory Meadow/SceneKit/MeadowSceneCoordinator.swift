@@ -13,6 +13,7 @@ final class MeadowSceneCoordinator: NSObject {
     var cameraNode: SCNNode?
     var memoriesByID: [UUID: MemoryItem] = [:]
     var knownMemoryIDs: Set<UUID> = []
+    var knownPathConnections: Set<PathConnection> = []
     var hasPerformedInitialSync = false
     private let parallaxController = DeviceParallaxController()
 

@@ -30,9 +30,8 @@ enum CameraController {
 
         cameraNode.position.x -= Float(translation.x) * sensitivity
         cameraNode.position.z -= Float(translation.y) * sensitivity
-        cameraNode.position.x = cameraNode.position.x.clamped(to: -18...18)
-        cameraNode.position.z = cameraNode.position.z.clamped(to: 4...28)
-        lookAtMeadow(from: cameraNode)
+        cameraNode.position.x = cameraNode.position.x.clamped(to: -14...14)
+        cameraNode.position.z = cameraNode.position.z.clamped(to: 8...20)
     }
 
     static func zoom(cameraNode: SCNNode, scale: CGFloat) {

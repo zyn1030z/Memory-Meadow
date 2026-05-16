@@ -24,7 +24,7 @@ struct PremiumHUDView: View {
                 // Avatar
                 Circle()
                     .fill(LinearGradient(
-                        colors: [.blue, .purple],
+                        colors: [Color(red: 0.48, green: 0.77, blue: 0.92), Color(red: 0.66, green: 0.54, blue: 0.95)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ))
@@ -34,16 +34,18 @@ struct PremiumHUDView: View {
                             .font(.system(size: 20, weight: .bold))
                             .foregroundStyle(.white)
                     )
+                    .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
 
                 // Greeting text
                 VStack(alignment: .leading, spacing: 4) {
                     Text(greeting)
                         .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(.black.opacity(0.78))
+                        .shadow(color: .white.opacity(0.4), radius: 8, x: 0, y: 1)
 
                     Text(subtitle)
                         .font(.system(size: 16, weight: .regular))
-                        .foregroundStyle(.secondary.opacity(0.6))
+                        .foregroundStyle(.black.opacity(0.46))
                 }
             }
             .padding(.top, 20)
@@ -67,9 +69,13 @@ struct PremiumHUDView: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 30)
-                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                        .fill(Color.white.opacity(0.08))
                 )
-                .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 4)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(Color.white.opacity(0.28), lineWidth: 1)
+                )
+                .shadow(color: .black.opacity(0.10), radius: 18, x: 0, y: 8)
 
                 // Floating FAB
                 FloatingAddButton(action: onAddPressed)
@@ -108,7 +114,7 @@ struct FloatingAddButton: View {
             ZStack {
                 Circle()
                     .fill(LinearGradient(
-                        colors: [.green, .blue],
+                        colors: [Color(red: 0.47, green: 0.78, blue: 0.48), Color(red: 0.42, green: 0.67, blue: 0.95)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ))

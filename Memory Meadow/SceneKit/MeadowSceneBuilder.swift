@@ -14,16 +14,14 @@ enum MeadowSceneBuilder {
     static func makeScene() -> (scene: SCNScene, cameraNode: SCNNode) {
         let scene = SCNScene()
         scene.background.contents = MeadowMaterials.skyColor
-        scene.fogColor = MeadowMaterials.fogColor
-        scene.fogStartDistance = 14
-        scene.fogEndDistance = 42
-        scene.fogDensityExponent = 0.55
 
         addGround(to: scene)
+        addHorizonLayers(to: scene)
         addHills(to: scene)
         MeadowWorldBuilder.populate(scene: scene)
         addStream(to: scene)
         addLights(to: scene)
+        addPathRoot(to: scene)
         addMemoryRoot(to: scene)
 
         let cameraNode = CameraController.makeCameraNode()
@@ -77,14 +75,47 @@ enum MeadowSceneBuilder {
         scene.rootNode.addChildNode(ambientNode)
     }
 
+    private static func addHorizonLayers(to scene: SCNScene) {
+        let horizonRoot = SCNNode()
+        horizonRoot.name = "HorizonRoot"
+
+        let farMist = SCNPlane(width: 78, height: 8)
+        farMist.firstMaterial = MeadowMaterials.horizonMist
+        let farMistNode = SCNNode(geometry: farMist)
+        farMistNode.position = SCNVector3(0, 5.2, 34)
+        horizonRoot.addChildNode(farMistNode)
+
+        let midSilhouette = SCNPlane(width: 70, height: 5)
+        midSilhouette.firstMaterial = MeadowMaterials.horizonLine
+        let midNode = SCNNode(geometry: midSilhouette)
+        midNode.position = SCNVector3(0, 4.0, 29)
+        horizonRoot.addChildNode(midNode)
+
+        let softHillBand = SCNPlane(width: 64, height: 3.2)
+        softHillBand.firstMaterial = MeadowMaterials.hillSoft
+        let hillBandNode = SCNNode(geometry: softHillBand)
+        hillBandNode.position = SCNVector3(0, 3.0, 24)
+        hillBandNode.opacity = 0.22
+        horizonRoot.addChildNode(hillBandNode)
+
+        scene.rootNode.addChildNode(horizonRoot)
+    }
+
+    private static func addPathRoot(to scene: SCNScene) {
+        let root = SCNNode()
+        root.name = PathNetworkSynchronizer.rootName
+        scene.rootNode.addChildNode(root)
+    }
+
     private static func addHills(to scene: SCNScene) {
         let hillRoot = SCNNode()
         hillRoot.name = "HillRoot"
 
         let hillPositions: [SCNVector3] = [
-            SCNVector3(-12, -0.8, 8),
-            SCNVector3(0, -0.6, 10),
-            SCNVector3(12, -0.9, 7)
+            SCNVector3(-14, -0.85, 9),
+            SCNVector3(-2, -0.65, 11),
+            SCNVector3(9, -0.92, 8),
+            SCNVector3(16, -0.78, 10)
         ]
 
         for position in hillPositions {
@@ -98,13 +129,11 @@ enum MeadowSceneBuilder {
 
     private static func makeHillNode() -> SCNNode {
         let hill = SCNNode()
-        let geometry = SCNSphere(radius: 6.0)
-        geometry.firstMaterial?.diffuse.contents = UIColor(red: 0.48, green: 0.72, blue: 0.48, alpha: 1.0)
-        geometry.firstMaterial?.lightingModel = .physicallyBased
-        geometry.firstMaterial?.roughness.contents = 0.9
+        let geometry = SCNSphere(radius: 6.2)
+        geometry.firstMaterial = Bool.random() ? MeadowMaterials.hillSoft : MeadowMaterials.groundWarm
 
         hill.geometry = geometry
-        hill.scale = SCNVector3(1.0, 0.35, 1.0)
+        hill.scale = SCNVector3(1.0, 0.34, 1.08)
         return hill
     }
 

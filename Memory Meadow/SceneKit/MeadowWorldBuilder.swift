@@ -15,7 +15,7 @@ enum MeadowWorldBuilder {
         addTrees(to: scene, count: 5)
         addBirds(to: scene)
         addClouds(to: scene)
-        addFireflies(to: scene, count: 12)
+//        addFireflies(to: scene, count: 12)
     }
 
     private static func addGrassClusters(to scene: SCNScene, count: Int) {
@@ -119,6 +119,7 @@ enum MeadowWorldBuilder {
                 Float.random(in: 0.6...2.2),
                 Float.random(in: -12...14)
             )
+            firefly.opacity = CGFloat.random(in: 0.4...0.8)
             root.addChildNode(firefly)
         }
 
