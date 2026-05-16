@@ -10,6 +10,7 @@ import SceneKit
 
 struct MeadowSceneView: UIViewRepresentable {
     let memories: [MemoryItem]
+    let theme: MeadowTheme
     @Binding var selectedMemory: MemoryItem?
 
     func makeCoordinator() -> MeadowSceneCoordinator {
@@ -18,7 +19,7 @@ struct MeadowSceneView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
-        let (scene, cameraNode) = MeadowSceneBuilder.makeScene()
+        let (scene, cameraNode) = MeadowSceneBuilder.makeScene(theme: theme)
         scnView.scene = scene
         scnView.backgroundColor = .clear
         scnView.allowsCameraControl = false
@@ -32,6 +33,13 @@ struct MeadowSceneView: UIViewRepresentable {
 
     func updateUIView(_ scnView: SCNView, context: Context) {
         context.coordinator.parent = self
+
+        if context.coordinator.currentTheme != theme {
+            let (scene, cameraNode) = MeadowSceneBuilder.makeScene(theme: theme)
+            scnView.scene = scene
+            context.coordinator.configureSceneReset(cameraNode: cameraNode, theme: theme)
+        }
+
         context.coordinator.updateMemories(memories)
 
         guard let scene = scnView.scene else { return }

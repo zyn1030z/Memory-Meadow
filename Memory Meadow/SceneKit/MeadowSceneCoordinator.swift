@@ -16,6 +16,7 @@ final class MeadowSceneCoordinator: NSObject {
     var knownPathConnections: Set<PathConnection> = []
     var hasPerformedInitialSync = false
     var currentMemoryCount = 0
+    var currentTheme: MeadowTheme = .spring
     var currentCameraBounds: (x: ClosedRange<Float>, z: ClosedRange<Float>) = (x: -14...14, z: 8...20)
     var currentMaxZoom: Double = 28
     private let parallaxController = DeviceParallaxController()
@@ -44,6 +45,14 @@ final class MeadowSceneCoordinator: NSObject {
 
     deinit {
         parallaxController.stop()
+    }
+
+    func configureSceneReset(cameraNode: SCNNode, theme: MeadowTheme) {
+        self.cameraNode = cameraNode
+        currentTheme = theme
+        knownMemoryIDs.removeAll()
+        knownPathConnections.removeAll()
+        hasPerformedInitialSync = false
     }
 
     func updateMemories(_ memories: [MemoryItem]) {

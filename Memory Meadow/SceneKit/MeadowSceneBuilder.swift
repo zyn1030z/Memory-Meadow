@@ -11,14 +11,14 @@ import UIKit
 enum MeadowSceneBuilder {
     static let memoryRootName = "MemoryNodesRoot"
 
-    static func makeScene() -> (scene: SCNScene, cameraNode: SCNNode) {
+    static func makeScene(theme: MeadowTheme = .spring) -> (scene: SCNScene, cameraNode: SCNNode) {
         let scene = SCNScene()
-        scene.background.contents = MeadowMaterials.skyColor
+        scene.background.contents = theme.skyColor
 
-        addGround(to: scene)
+        addGround(to: scene, theme: theme)
         addHorizonLayers(to: scene)
         addHills(to: scene)
-        MeadowWorldBuilder.populate(scene: scene, memoryCount: 0)
+        MeadowWorldBuilder.populate(scene: scene, memoryCount: 0, theme: theme)
         addStream(to: scene)
         addLights(to: scene)
         addPathRoot(to: scene)
@@ -33,10 +33,10 @@ enum MeadowSceneBuilder {
         return (scene, cameraNode)
     }
 
-    private static func addGround(to scene: SCNScene) {
+    private static func addGround(to scene: SCNScene, theme: MeadowTheme) {
         let floor = SCNFloor()
         floor.reflectivity = 0
-        floor.firstMaterial = MeadowMaterials.grassBase
+        floor.firstMaterial = MeadowMaterials.groundMaterial(for: theme)
         floor.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(18, 18, 1)
         floor.firstMaterial?.diffuse.wrapS = .repeat
         floor.firstMaterial?.diffuse.wrapT = .repeat

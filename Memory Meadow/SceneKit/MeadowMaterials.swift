@@ -165,6 +165,14 @@ enum MeadowMaterials {
     static let skyColor = UIColor(red: 0.72, green: 0.86, blue: 1.0, alpha: 1.0)
     static let fogColor = UIColor(red: 0.78, green: 0.88, blue: 1.0, alpha: 0.36)
 
+    static func groundMaterial(for theme: MeadowTheme) -> SCNMaterial {
+        createGrassMaterial(color: theme.grassColor, roughness: 0.88, metalness: 0.0)
+    }
+
+    static func grassMaterial(for theme: MeadowTheme) -> SCNMaterial {
+        createGrassMaterial(color: theme.grassColor, roughness: 0.82, metalness: 0.0)
+    }
+
     // Helper functions
     private static func createGrassMaterial(color: UIColor, roughness: Float, metalness: Float) -> SCNMaterial {
         let material = SCNMaterial()

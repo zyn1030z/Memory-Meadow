@@ -8,14 +8,24 @@
 import SceneKit
 
 enum MeadowWorldBuilder {
-    static func populate(scene: SCNScene, memoryCount: Int = 0) {
-        addGrassClusters(to: scene, count: 50)
-        addFlowers(to: scene, count: 20)
-        addStones(to: scene, count: 8)
-        addTrees(to: scene, count: 5)
-        addBirds(to: scene)
-        addClouds(to: scene)
-//        addFireflies(to: scene, count: 12)
+    static func populate(scene: SCNScene, memoryCount: Int = 0, theme: MeadowTheme = .spring) {
+        let counts = theme.decorCounts
+        addGrassClusters(to: scene, count: counts.grass)
+        addFlowers(to: scene, count: counts.flowers)
+        addStones(to: scene, count: counts.stones)
+        addTrees(to: scene, count: counts.trees)
+
+        if theme.enableBirds {
+            addBirds(to: scene)
+        }
+
+        if theme.enableClouds {
+            addClouds(to: scene)
+        }
+
+        if counts.fireflies > 0 {
+            addFireflies(to: scene, count: counts.fireflies)
+        }
 
         if ZoneManager.isPhase4Active(memoryCount: memoryCount) {
             populatePhase4Zones(scene: scene)

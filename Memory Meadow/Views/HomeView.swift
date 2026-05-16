@@ -11,8 +11,10 @@ import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \MemoryItem.createdAt, order: .reverse) private var memories: [MemoryItem]
+    @StateObject private var themeManager = ThemeManager.shared
 
     @State private var showingAddMemory = false
+    @State private var showingThemePicker = false
     @State private var selectedMemory: MemoryItem?
 
     var flowerCount: Int {
@@ -25,8 +27,27 @@ struct HomeView: View {
 
     var body: some View {
         ZStack {
-            MeadowSceneView(memories: memories, selectedMemory: $selectedMemory)
+            MeadowSceneView(memories: memories, theme: themeManager.currentTheme, selectedMemory: $selectedMemory)
+                .id(themeManager.currentTheme.rawValue)
                 .ignoresSafeArea()
+
+            VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        showingThemePicker = true
+                    } label: {
+                        Text(themeManager.currentTheme.displayName)
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(.ultraThinMaterial, in: Capsule())
+                    }
+                    .padding(.top, 62)
+                    .padding(.trailing, 24)
+                }
+                Spacer()
+            }
 
             PremiumHUDView(
                 greeting: "Chào Hùng",
@@ -41,6 +62,10 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showingAddMemory) {
             AddMemoryView()
+        }
+        .sheet(isPresented: $showingThemePicker) {
+            ThemePickerView(selectedTheme: $themeManager.currentTheme)
+                .presentationDetents([.medium, .large])
         }
         .sheet(item: $selectedMemory) { memory in
             MemoryDetailView(memory: memory)
