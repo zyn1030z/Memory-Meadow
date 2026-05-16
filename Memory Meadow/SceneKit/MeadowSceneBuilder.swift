@@ -13,16 +13,16 @@ enum MeadowSceneBuilder {
 
     static func makeScene() -> (scene: SCNScene, cameraNode: SCNNode) {
         let scene = SCNScene()
-        scene.background.contents = UIColor(red: 0.55, green: 0.78, blue: 1.0, alpha: 1.0)
+        scene.background.contents = MeadowMaterials.skyColor
+        scene.fogColor = MeadowMaterials.fogColor
+        scene.fogStartDistance = 14
+        scene.fogEndDistance = 42
+        scene.fogDensityExponent = 0.55
 
         addGround(to: scene)
         addHills(to: scene)
-        addGrass(to: scene)
-        addStones(to: scene)
-//        addMountains(to: scene)
+        MeadowWorldBuilder.populate(scene: scene)
         addStream(to: scene)
-//        addClouds(to: scene)
-        addBirds(to: scene)
         addLights(to: scene)
         addMemoryRoot(to: scene)
 
@@ -36,33 +36,40 @@ enum MeadowSceneBuilder {
     }
 
     private static func addGround(to scene: SCNScene) {
-        let plane = SCNPlane(width: 44, height: 44)
-        plane.firstMaterial?.diffuse.contents = UIColor(red: 0.28, green: 0.66, blue: 0.27, alpha: 1.0)
-        plane.firstMaterial?.roughness.contents = 0.9
+        let floor = SCNFloor()
+        floor.reflectivity = 0
+        floor.firstMaterial = MeadowMaterials.grassBase
+        floor.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(18, 18, 1)
+        floor.firstMaterial?.diffuse.wrapS = .repeat
+        floor.firstMaterial?.diffuse.wrapT = .repeat
 
-        let groundNode = SCNNode(geometry: plane)
+        let groundNode = SCNNode(geometry: floor)
         groundNode.name = "GroundNode"
-        groundNode.eulerAngles.x = -.pi / 2
         scene.rootNode.addChildNode(groundNode)
     }
 
     private static func addLights(to scene: SCNScene) {
         let sun = SCNLight()
         sun.type = .directional
-        sun.intensity = 850
+        sun.intensity = 980
         sun.castsShadow = true
+        sun.shadowMode = .deferred
+        sun.shadowRadius = 8
+        sun.shadowSampleCount = 16
+        sun.shadowColor = UIColor.black.withAlphaComponent(0.22)
+        sun.color = UIColor(red: 1.0, green: 0.92, blue: 0.78, alpha: 1.0)
 
         let sunNode = SCNNode()
         sunNode.name = MeadowEnvironmentAnimator.sunLightName
         sunNode.light = sun
-        sunNode.position = SCNVector3(6, 12, 8)
-        sunNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
+        sunNode.position = SCNVector3(7, 14, 9)
+        sunNode.eulerAngles = SCNVector3(-Float.pi / 3.4, Float.pi / 4.5, 0)
         scene.rootNode.addChildNode(sunNode)
 
         let ambient = SCNLight()
         ambient.type = .ambient
-        ambient.intensity = 350
-        ambient.color = UIColor.white
+        ambient.intensity = 420
+        ambient.color = UIColor(red: 0.78, green: 0.88, blue: 1.0, alpha: 1.0)
 
         let ambientNode = SCNNode()
         ambientNode.name = MeadowEnvironmentAnimator.ambientLightName
