@@ -8,7 +8,7 @@
 import SceneKit
 
 enum MeadowWorldBuilder {
-    static func populate(scene: SCNScene) {
+    static func populate(scene: SCNScene, memoryCount: Int = 0) {
         addGrassClusters(to: scene, count: 50)
         addFlowers(to: scene, count: 20)
         addStones(to: scene, count: 8)
@@ -16,6 +16,10 @@ enum MeadowWorldBuilder {
         addBirds(to: scene)
         addClouds(to: scene)
 //        addFireflies(to: scene, count: 12)
+
+        if ZoneManager.isPhase4Active(memoryCount: memoryCount) {
+            populatePhase4Zones(scene: scene)
+        }
     }
 
     private static func addGrassClusters(to scene: SCNScene, count: Int) {
@@ -132,5 +136,132 @@ enum MeadowWorldBuilder {
             y,
             Float.random(in: -14...20)
         )
+    }
+
+    static func populatePhase4Zones(scene: SCNScene) {
+        let root = SCNNode()
+        root.name = "Phase4ZoneRoot"
+
+        populateEasternGrove(root: root)
+        populateWesternHills(root: root)
+        populateNorthernGarden(root: root)
+        populateSouthernShore(root: root)
+
+        scene.rootNode.addChildNode(root)
+    }
+
+    private static func populateEasternGrove(root: SCNNode) {
+        let zoneRoot = SCNNode()
+        zoneRoot.name = "EasternGroveRoot"
+
+        for _ in 0..<15 {
+            let tree = LowPolyFactory.makeSmallTree()
+            tree.position = SCNVector3(
+                Float.random(in: 8...20),
+                0,
+                Float.random(in: -8...8)
+            )
+            tree.scale = SCNVector3(1.2, 1.2, 1.2)
+            zoneRoot.addChildNode(tree)
+        }
+
+        for _ in 0..<30 {
+            let grass = LowPolyFactory.makeGrassClump()
+            grass.position = SCNVector3(
+                Float.random(in: 8...20),
+                0,
+                Float.random(in: -8...8)
+            )
+            zoneRoot.addChildNode(grass)
+        }
+
+        root.addChildNode(zoneRoot)
+    }
+
+    private static func populateWesternHills(root: SCNNode) {
+        let zoneRoot = SCNNode()
+        zoneRoot.name = "WesternHillsRoot"
+
+        for _ in 0..<20 {
+            let stone = LowPolyFactory.makeStone()
+            stone.position = SCNVector3(
+                Float.random(in: -20 ... -8),
+                0.08,
+                Float.random(in: -8...8)
+            )
+            stone.scale = SCNVector3(0.6, 0.6, 0.6)
+            zoneRoot.addChildNode(stone)
+        }
+
+        for _ in 0..<15 {
+            let grass = LowPolyFactory.makeGrassClump()
+            grass.position = SCNVector3(
+                Float.random(in: -20 ... -8),
+                0,
+                Float.random(in: -8...8)
+            )
+            grass.scale = SCNVector3(0.7, 0.7, 0.7)
+            zoneRoot.addChildNode(grass)
+        }
+
+        root.addChildNode(zoneRoot)
+    }
+
+    private static func populateNorthernGarden(root: SCNNode) {
+        let zoneRoot = SCNNode()
+        zoneRoot.name = "NorthernGardenRoot"
+
+        for _ in 0..<40 {
+            let flower = LowPolyFactory.makeFlower()
+            flower.position = SCNVector3(
+                Float.random(in: -8...8),
+                0,
+                Float.random(in: 8...20)
+            )
+            flower.scale = SCNVector3(0.9, 0.9, 0.9)
+            zoneRoot.addChildNode(flower)
+        }
+
+        for _ in 0..<25 {
+            let grass = LowPolyFactory.makeGrassClump()
+            grass.position = SCNVector3(
+                Float.random(in: -8...8),
+                0,
+                Float.random(in: 8...20)
+            )
+            grass.scale = SCNVector3(0.5, 0.5, 0.5)
+            zoneRoot.addChildNode(grass)
+        }
+
+        root.addChildNode(zoneRoot)
+    }
+
+    private static func populateSouthernShore(root: SCNNode) {
+        let zoneRoot = SCNNode()
+        zoneRoot.name = "SouthernShoreRoot"
+
+        for _ in 0..<30 {
+            let reed = LowPolyFactory.makeGrassClump()
+            reed.position = SCNVector3(
+                Float.random(in: -8...8),
+                0,
+                Float.random(in: -20 ... -8)
+            )
+            reed.scale = SCNVector3(0.8, 1.4, 0.8)
+            zoneRoot.addChildNode(reed)
+        }
+
+        for _ in 0..<12 {
+            let rock = LowPolyFactory.makeStone()
+            rock.position = SCNVector3(
+                Float.random(in: -8...8),
+                0.05,
+                Float.random(in: -20 ... -8)
+            )
+            rock.scale = SCNVector3(0.5, 0.3, 0.5)
+            zoneRoot.addChildNode(rock)
+        }
+
+        root.addChildNode(zoneRoot)
     }
 }

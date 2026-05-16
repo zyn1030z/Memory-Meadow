@@ -8,10 +8,11 @@
 import Foundation
 
 enum MemoryPositionGenerator {
-    static func randomPosition() -> (x: Float, z: Float) {
-        (
-            x: Float.random(in: -8...8),
-            z: Float.random(in: -8...8)
+    static func randomPosition(memoryCount: Int = 0) -> (x: Float, z: Float) {
+        let bounds = ZoneManager.placementRange(for: memoryCount)
+        return (
+            x: Float.random(in: bounds.x),
+            z: Float.random(in: bounds.z)
         )
     }
 }

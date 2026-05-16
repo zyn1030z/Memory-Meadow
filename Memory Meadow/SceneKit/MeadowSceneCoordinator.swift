@@ -15,6 +15,9 @@ final class MeadowSceneCoordinator: NSObject {
     var knownMemoryIDs: Set<UUID> = []
     var knownPathConnections: Set<PathConnection> = []
     var hasPerformedInitialSync = false
+    var currentMemoryCount = 0
+    var currentCameraBounds: (x: ClosedRange<Float>, z: ClosedRange<Float>) = (x: -14...14, z: 8...20)
+    var currentMaxZoom: Double = 28
     private let parallaxController = DeviceParallaxController()
 
     init(parent: MeadowSceneView) {
@@ -45,6 +48,13 @@ final class MeadowSceneCoordinator: NSObject {
 
     func updateMemories(_ memories: [MemoryItem]) {
         memoriesByID = Dictionary(uniqueKeysWithValues: memories.map { ($0.id, $0) })
+
+        let newCount = memories.count
+        if newCount != currentMemoryCount {
+            currentMemoryCount = newCount
+            currentCameraBounds = ZoneManager.cameraBounds(for: newCount)
+            currentMaxZoom = ZoneManager.isPhase4Active(memoryCount: newCount) ? 35 : 28
+        }
     }
 
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
@@ -63,14 +73,14 @@ final class MeadowSceneCoordinator: NSObject {
         guard let cameraNode = cameraNode else { return }
 
         let translation = gesture.translation(in: gesture.view)
-        CameraController.pan(cameraNode: cameraNode, translation: translation)
+        CameraController.pan(cameraNode: cameraNode, translation: translation, bounds: currentCameraBounds)
         gesture.setTranslation(.zero, in: gesture.view)
     }
 
     @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {
         guard let cameraNode = cameraNode else { return }
 
-        CameraController.zoom(cameraNode: cameraNode, scale: gesture.scale)
+        CameraController.zoom(cameraNode: cameraNode, scale: gesture.scale, maxZoom: currentMaxZoom)
         gesture.scale = 1.0
     }
 }

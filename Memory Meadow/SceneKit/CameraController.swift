@@ -24,20 +24,22 @@ enum CameraController {
         return node
     }
 
-    static func pan(cameraNode: SCNNode, translation: CGPoint) {
+    static func pan(cameraNode: SCNNode, translation: CGPoint, bounds: (x: ClosedRange<Float>, z: ClosedRange<Float>)? = nil) {
         guard let camera = cameraNode.camera else { return }
         let sensitivity = Float(camera.orthographicScale) * 0.0018
 
         cameraNode.position.x -= Float(translation.x) * sensitivity
         cameraNode.position.z -= Float(translation.y) * sensitivity
-        cameraNode.position.x = cameraNode.position.x.clamped(to: -14...14)
-        cameraNode.position.z = cameraNode.position.z.clamped(to: 8...20)
+
+        let activeBounds = bounds ?? (x: -14...14, z: 8...20)
+        cameraNode.position.x = cameraNode.position.x.clamped(to: activeBounds.x)
+        cameraNode.position.z = cameraNode.position.z.clamped(to: activeBounds.z)
     }
 
-    static func zoom(cameraNode: SCNNode, scale: CGFloat) {
+    static func zoom(cameraNode: SCNNode, scale: CGFloat, maxZoom: Double = 28) {
         guard let camera = cameraNode.camera else { return }
         let nextScale = camera.orthographicScale / Double(scale)
-        camera.orthographicScale = nextScale.clamped(to: 7...28)
+        camera.orthographicScale = nextScale.clamped(to: 7...maxZoom)
     }
 
     static func lookAtMeadow(from cameraNode: SCNNode) {

@@ -10,6 +10,7 @@ import SceneKit
 enum PathNetworkSynchronizer {
     static let rootName = "PathNetworkRoot"
     static let phase3RootName = "Phase3DecorationRoot"
+    static let phase4RootName = "Phase4ZoneRoot"
 
     static func sync(
         memories: [MemoryItem],
@@ -46,6 +47,9 @@ enum PathNetworkSynchronizer {
 
         // Phase 3: Add bridges/lamps/signs when connection count >= 50
         syncPhase3Decorations(connectionCount: connections.count, in: scene)
+
+        // Phase 4: Add world zones when memory count >= 100
+        syncPhase4Zones(memoryCount: memories.count, in: scene)
     }
 
     private static func syncPhase3Decorations(connectionCount: Int, in scene: SCNScene) {
@@ -62,6 +66,20 @@ enum PathNetworkSynchronizer {
             for decoration in decorations {
                 phase3Root.addChildNode(decoration)
             }
+        }
+    }
+
+    private static func syncPhase4Zones(memoryCount: Int, in scene: SCNScene) {
+        let phase4Root = scene.rootNode.childNode(withName: phase4RootName, recursively: false) ?? {
+            let root = SCNNode()
+            root.name = phase4RootName
+            scene.rootNode.addChildNode(root)
+            return root
+        }()
+
+        // Only add zones once when crossing threshold
+        if ZoneManager.isPhase4Active(memoryCount: memoryCount) && phase4Root.childNodes.isEmpty {
+            MeadowWorldBuilder.populatePhase4Zones(scene: scene)
         }
     }
 

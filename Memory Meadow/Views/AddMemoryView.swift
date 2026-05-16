@@ -98,7 +98,8 @@ struct AddMemoryView: View {
         let trimmedContent = content.trimmingCharacters(in: .whitespaces)
         guard !trimmedContent.isEmpty else { return }
 
-        let position = MemoryPositionGenerator.randomPosition()
+        let allMemories = (try? modelContext.fetch(FetchDescriptor<MemoryItem>())) ?? []
+        let position = MemoryPositionGenerator.randomPosition(memoryCount: allMemories.count)
         let memory = MemoryItem(
             content: trimmedContent,
             type: selectedType,

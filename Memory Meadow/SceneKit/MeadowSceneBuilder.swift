@@ -18,7 +18,7 @@ enum MeadowSceneBuilder {
         addGround(to: scene)
         addHorizonLayers(to: scene)
         addHills(to: scene)
-        MeadowWorldBuilder.populate(scene: scene)
+        MeadowWorldBuilder.populate(scene: scene, memoryCount: 0)
         addStream(to: scene)
         addLights(to: scene)
         addPathRoot(to: scene)
