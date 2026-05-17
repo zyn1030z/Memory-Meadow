@@ -98,6 +98,13 @@ enum LowPolyFactory {
     }
 
     static func makeSmallTree() -> SCNNode {
+        if let assetTree = AssetLoader.loadPineTreeAsset(yaw: Float.random(in: 0...(Float.pi * 2))) {
+            print("✅ Pine_4.usdc loaded - using external asset")
+            return assetTree
+        }
+
+        print("⚠️ Pine_4.usdc failed - using procedural tree")
+
         let root = SCNNode()
 
         let trunk = SCNCylinder(radius: 0.09, height: 0.7)
